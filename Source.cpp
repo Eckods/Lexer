@@ -1,7 +1,3 @@
-//Authors: Raul Esquivias; Rjesquivias@csu.fullerton.edu
-//         David Moreno; dmoreno757@csu.fullerton.edu
-//         Steve Sanchez; 
-
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -22,7 +18,7 @@ char peek_token();
 
 int main()
 {
-
+        std::ofstream output("/Users/RJ/Desktop/Parser/stream.txt");
 	std::ifstream input("mycode.txt"); //Read in the code
 	if (!input.is_open())
 	{
@@ -144,13 +140,18 @@ int main()
 				currentToken = checkForKey(currentToken);
 
 				if (isKey == true) {
+					output << "(:token " << lineNum << " " << currentToken << ")\n";
 					std::cout << "(:token " << lineNum << " " << currentToken << ")" << std::endl;
 					ix++;
 				}
 				else {
+
+					output << "(:token " << lineNum << " ident :ix " << ix << " :str \"";
 					std::cout << "(:token " << lineNum << " ident :ix " << ix << " :str \"";
 
 					ix++;
+
+					output << currentToken << "\")\n";
 					std::cout << currentToken << "\")" << std::endl;
 					//std::cout << "Going To State: " << currentState << std::endl;
 					//std::cout << "charLocation: " << charLocation << std::endl << std::endl;
@@ -176,6 +177,7 @@ int main()
 				//std::cout << TABLELENGTH;
 				if (index > TABLELENGTH)
 				{
+					output << "(:token " << lineNum << " int :str \"";
 					std::cout << "(:token " << lineNum << " int :str \"";
 					int stringSize = charLocation - tokenLocation;
 					char* temp = new char[stringSize];
@@ -194,6 +196,7 @@ int main()
 					currentState = start;
 					charLocation--;
 
+					output << currentToken << "\")\n";
 					std::cout << currentToken << "\")" << std::endl;
 					break;
 				}
@@ -208,6 +211,7 @@ int main()
 			case endNum:
 			{
 				//Create num token, return to starting state, back up character pointer
+				output << "(:token " << lineNum << " int :str \"";
 				std::cout << "(:token " << lineNum << " int :str \"";
 				int stringSize = charLocation - tokenLocation;
 				char* temp = new char[stringSize];
@@ -226,6 +230,7 @@ int main()
 				currentState = start;
 				charLocation--;
 
+				output << currentToken << "\")\n";
 				std::cout << currentToken << "\")" << std::endl;
 				//std::cout << "Going To State: " << currentState << std::endl;
 				//std::cout << "charLocation: " << charLocation << std::endl << std::endl;
@@ -251,6 +256,7 @@ int main()
 
 				if (currentState != eqeq) //equal token else its opeq token
 				{
+					output << "(:token " << lineNum << " equal)\n";
 					std::cout << "(:token " << lineNum << " equal)" << std::endl;
 					charLocation--; //Back up location
 					ix++;
@@ -279,6 +285,7 @@ int main()
 				int index = 0;
 				currentState = States(stateChange(stateTable, eqeq, index));
 
+				output << "(:token " << lineNum << " opeq)\n";
 				std::cout << "(:token " << lineNum << " opeq)" << std::endl;
 				tokenLocation = charLocation;
 				ix++;
@@ -287,6 +294,7 @@ int main()
 			}
 			case semi:
 			{
+				output << "(:token " << lineNum << " semi)\n";
 				std::cout << "(:token " << lineNum << " semi)" << std::endl;
 				currentState = start;
 				ix++;
@@ -314,6 +322,7 @@ int main()
 				if (index > TABLELENGTH)
 				{
 					//Create num token, return to starting state, back up character pointer
+					output << "(:token " << lineNum << " float :str \"";
 					std::cout << "(:token " << lineNum << " float :str \"";
 					int stringSize = charLocation - tokenLocation;
 					char* temp = new char[stringSize];
@@ -332,6 +341,7 @@ int main()
 					currentState = start;
 					charLocation--;
 
+					output << currentToken << "\")\n";
 					std::cout << currentToken << "\")" << std::endl;
 				}
 				ix++;
@@ -340,6 +350,7 @@ int main()
 			case endfloater:
 			{
 				//Create num token, return to starting state, back up character pointer
+				output << "(:token " << lineNum << " float :str \"";
 				std::cout << "(:token " << lineNum << " float :str \"";
 				int stringSize = charLocation - tokenLocation;
 				char* temp = new char[stringSize];
@@ -358,6 +369,7 @@ int main()
 				currentState = start;
 				charLocation--;
 
+				output << currentToken << "\")\n";
 				std::cout << currentToken << "\")" << std::endl;
 				//std::cout << "Going To State: " << currentState << std::endl;
 				//std::cout << "charLocation: " << charLocation << std::endl << std::endl;
@@ -393,6 +405,7 @@ int main()
 				//charLocation - 1;
 				//std::cout << "charLocation: " << charLocation << std::endl;
 				//Create num token, return to starting state, back up character pointer
+				output << "(:token " << lineNum << " string :str ";
 				std::cout << "(:token " << lineNum << " string :str ";
 				int stringSize = charLocation - tokenLocation;
 				char* temp = new char[stringSize];
@@ -421,6 +434,7 @@ int main()
 				currentState = start;
 				charLocation--;
 
+				output << currentToken << "\")\n";
 				std::cout << currentToken << "\")" << std::endl;
 
 				tokenLocation++;
@@ -434,6 +448,7 @@ int main()
 			}
 			case aster:
 			{
+				output << "(:token " << lineNum << " aster)\n";
 				std::cout << "(:token " << lineNum << " aster)" << std::endl;
 				currentState = start;
 				tokenLocation++;
@@ -442,6 +457,7 @@ int main()
 			}
 			case caret:
 			{
+				output << "(:token " << lineNum << " caret)\n";
 				std::cout << "(:token " << lineNum << " caret)" << std::endl;
 				currentState = start;
 				tokenLocation++;
@@ -450,6 +466,7 @@ int main()
 			}
 			case colon:
 			{
+				output << "(:token " << lineNum << " colon)\n";
 				std::cout << "(:token " << lineNum << " colon)" << std::endl;
 				currentState = start;
 				tokenLocation++;
@@ -458,6 +475,7 @@ int main()
 			}
 			case dot:
 			{
+				output << "(:token " << lineNum << " dot)\n";
 				std::cout << "(:token " << lineNum << " dot)" << std::endl;
 				currentState = start;
 				tokenLocation++;
@@ -486,6 +504,7 @@ int main()
 				}
 				else if (currentState != 4) //send to digit
 				{
+					output << "(:token " << lineNum << " minus)\n";
 					std::cout << "(:token " << lineNum << " minus)" << std::endl;
 					currentState = start;
 					charLocation--;
@@ -498,6 +517,7 @@ int main()
 			}
 			case plus:
 			{
+				output << "(:token " << lineNum << " plus)\n";
 				std::cout << "(:token " << lineNum << " plus)" << std::endl;
 				currentState = start;
 				tokenLocation++;
@@ -522,6 +542,7 @@ int main()
 
 				if (currentState != 20)
 				{
+					output << "(:token " << lineNum << " slash)\n";
 					std::cout << "(:token " << lineNum << " slash)" << std::endl;
 					currentState = start;
 					charLocation--;
@@ -549,6 +570,7 @@ int main()
 			}
 			case comma:
 			{
+				output << "(:token " << lineNum << " comma)\n";
 				std::cout << "(:token " << lineNum << " comma)" << std::endl;
 				currentState = start;
 				tokenLocation++;
@@ -581,6 +603,7 @@ int main()
 				}
 				else
 				{
+					output << "(:token " << lineNum << " angle1)\n";
 					std::cout << "(:token " << lineNum << " angle1)" << std::endl;
 					currentState = start;
 					tokenLocation++;
@@ -611,6 +634,7 @@ int main()
 				}
 				else
 				{
+					output << "(:token " << lineNum << " angle2)\n";
 					std::cout << "(:token " << lineNum << " angle2)" << std::endl;
 					currentState = start;
 					tokenLocation++;
@@ -621,6 +645,7 @@ int main()
 			}
 			case brace1:
 			{
+				output << "(:token " << lineNum << " brace1)\n";
 				std::cout << "(:token " << lineNum << " brace1)" << std::endl;
 				currentState = start;
 				//tokenLocation++;
@@ -630,6 +655,7 @@ int main()
 			}
 			case brace2:
 			{
+				output << "(:token " << lineNum << " brace2)\n";
 				std::cout << "(:token " << lineNum << " brace2)" << std::endl;
 				currentState = start;
 				tokenLocation++;
@@ -639,6 +665,7 @@ int main()
 			}
 			case bracket1:
 			{
+				output << "(:token " << lineNum << " brackets1)\n";
 				std::cout << "(:token " << lineNum << " brackets1)" << std::endl;
 				currentState = start;
 				tokenLocation++;
@@ -648,6 +675,7 @@ int main()
 			}
 			case bracket2:
 			{
+				output << "(:token " << lineNum << " brackets2)\n";
 				std::cout << "(:token " << lineNum << " brackets2)" << std::endl;
 				currentState = start;
 				tokenLocation++;
@@ -657,6 +685,7 @@ int main()
 			}
 			case parens1:
 			{
+				output << "(:token " << lineNum << " parens1)\n";
 				std::cout << "(:token " << lineNum << " parens1)" << std::endl;
 				currentState = start;
 				tokenLocation++;
@@ -666,6 +695,7 @@ int main()
 			}
 			case parens2:
 			{
+				output << "(:token " << lineNum << " parens2)\n";
 				std::cout << "(:token " << lineNum << " parens2)" << std::endl;
 				currentState = start;
 				tokenLocation++;
@@ -680,6 +710,7 @@ int main()
 				int index = 0;
 				currentState = States(stateChange(stateTable, oparrow, index));
 
+				output << "(:token " << lineNum << " oparrow)\n";
 				std::cout << "(:token " << lineNum << " oparrow)" << std::endl;
 				tokenLocation = charLocation;
 				ix++;
@@ -694,6 +725,7 @@ int main()
 				int index = 0;
 				currentState = States(stateChange(stateTable, opne, index));
 
+				output << "(:token " << lineNum << " opne)\n";
 				std::cout << "(:token " << lineNum << " opne)" << std::endl;
 				tokenLocation = charLocation;
 				ix++;
@@ -708,6 +740,7 @@ int main()
 				int index = 0;
 				currentState = States(stateChange(stateTable, ople, index));
 
+				output << "(:token " << lineNum << " ople)\n";
 				std::cout << "(:token " << lineNum << " ople)" << std::endl;
 				tokenLocation = charLocation;
 				ix++;
@@ -722,6 +755,7 @@ int main()
 				int index = 0;
 				currentState = States(stateChange(stateTable, opge, index));
 
+				output << "(:token " << lineNum << " opge)\n";
 				std::cout << "(:token " << lineNum << " opge)" << std::endl;
 				tokenLocation = charLocation;
 				ix++;
@@ -736,6 +770,7 @@ int main()
 				int index = 0;
 				currentState = States(stateChange(stateTable, opshl, index));
 
+				output << "(:token " << lineNum << " opshl)\n";
 				std::cout << "(:token " << lineNum << " opshl)" << std::endl;
 				tokenLocation = charLocation;
 
@@ -753,6 +788,7 @@ int main()
 				int index = 0;
 				currentState = States(stateChange(stateTable, opshr, index));
 
+				output << "(:token " << lineNum << " opshr)\n";
 				std::cout << "(:token " << lineNum << " opshr)" << std::endl;
 				tokenLocation = charLocation;
 				ix++;
